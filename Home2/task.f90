@@ -59,8 +59,8 @@ module task
              end do
          end do
   
-         call mpi_gather(max_sum,1,MPI_REAL8,most_of_max_sum,1,MPI_REAL8,0, MPI_COMM_WORLD, mpierr)
-         call mpi_bcast(most_of_max_sum,mpiSize,MPI_REAL8, 0, MPI_COMM_WORLD, mpierr)
+         call mpi_allgather(max_sum,1,MPI_REAL8,most_of_max_sum,1,MPI_REAL8, MPI_COMM_WORLD, mpierr)
+         !call mpi_bcast(most_of_max_sum,mpiSize,MPI_REAL8, 0, MPI_COMM_WORLD, mpierr)
          location_of_maximum=maxloc(most_of_max_sum,dim=1)-1
          
          
