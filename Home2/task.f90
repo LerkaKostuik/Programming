@@ -11,7 +11,7 @@ module task
          real(8), allocatable :: current_column(:), B(:,:)
          real(8) :: current_sum, max_sum
          logical :: transpos
-         integer :: mpierr, err, mpiSize, mpiRank, location_of_maximum
+         integer :: mpierr, mpiSize, mpiRank, location_of_maximum
          real(8), allocatable, dimension(:) :: most_of_max_sum 
          m = size(A, dim=1) 
          n = size(A, dim=2) 
@@ -30,7 +30,7 @@ module task
         
          call mpi_comm_size(MPI_COMM_WORLD, mpiSize, mpiErr)
          call mpi_comm_rank(MPI_COMM_WORLD, mpiRank, mpiErr)
-         allocate(most_of_max_sum(mpiSize))
+         allocate(most_of_max_sum(0:mpiSize-1))
            
          x1=1
          y1=1
@@ -59,13 +59,14 @@ module task
              end do
          end do
   
-         call mpi_allgather(max_sum,1,MPI_REAL8,most_of_max_sum,mpiSize,MPI_REAL8, MPI_COMM_WORLD, err)
+         call mpi_gather(max_sum,1,MPI_REAL8,most_of_max_sum,mpiSize,MPI_REAL8,0, MPI_COMM_WORLD, mpierr)
          location_of_maximum=maxloc(most_of_max_sum,dim=1)-1
-          
-         call mpi_bcast(x1, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, err)
-         call mpi_bcast(x2, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, err)
-         call mpi_bcast(y1, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, err)
-         call mpi_bcast(y2, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, err)
+         
+         call mpi_bcast(location_of_maximum, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, mpierr)
+         call mpi_bcast(x1, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, mpierr)
+         call mpi_bcast(x2, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, mpierr)
+         call mpi_bcast(y1, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, mpierr)
+         call mpi_bcast(y2, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, mpierr)
 
          deallocate(current_column)
          deallocate(most_of_max_sum)
