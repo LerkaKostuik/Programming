@@ -59,7 +59,7 @@ module task
              end do
          end do
   
-         call mpi_gather(max_sum,1,MPI_REAL8,most_of_max_sum,mpiSize,MPI_REAL8,0,MPI_COMM_WORLD, err)
+         call mpi_allgather(max_sum,1,MPI_REAL8,most_of_max_sum,mpiSize,MPI_REAL8, MPI_COMM_WORLD, err)
          location_of_maximum=maxloc(most_of_max_sum,dim=1)-1
           
          call mpi_bcast(x1, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, err)
