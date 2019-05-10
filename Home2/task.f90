@@ -1,5 +1,5 @@
 module task
-   use mpi
+   use :: mpi
    implicit none
    contains
        
@@ -30,7 +30,7 @@ module task
         
          call mpi_comm_size(MPI_COMM_WORLD, mpiSize, mpiErr)
          call mpi_comm_rank(MPI_COMM_WORLD, mpiRank, mpiErr)
-         allocate(most_of_max_sum(0:mpiSize-1))
+         allocate(most_of_max_sum(mpiSize))
            
          x1=1
          y1=1
@@ -59,10 +59,11 @@ module task
              end do
          end do
   
-         call mpi_gather(max_sum,1,MPI_REAL8,most_of_max_sum,mpiSize,MPI_REAL8,0, MPI_COMM_WORLD, mpierr)
+         call mpi_gather(max_sum,1,MPI_REAL8,most_of_max_sum,1,MPI_REAL8,0, MPI_COMM_WORLD, mpierr)
+         call mpi_bcast(most_of_max_sum,mpiSize,MPI_REAL8, 0, MPI_COMM_WORLD, mpierr)
          location_of_maximum=maxloc(most_of_max_sum,dim=1)-1
          
-         call mpi_bcast(location_of_maximum, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, mpierr)
+         
          call mpi_bcast(x1, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, mpierr)
          call mpi_bcast(x2, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, mpierr)
          call mpi_bcast(y1, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, mpierr)
