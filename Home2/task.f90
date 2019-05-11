@@ -3,7 +3,7 @@ module task
    implicit none
    contains
        
-      subroutine FindMaxCoordinates(A, x1, y1, x2, y2)
+      subroutine GetMaxCoordinates(A, x1, y1, x2, y2)
             
          real(8), intent(in), dimension(:,:) :: A
          integer(4), intent(out) :: x1, y1, x2, y2
