@@ -11,7 +11,7 @@ module task
          real(8), allocatable :: current_column(:), B(:,:)
          real(8) :: current_sum, max_sum
          logical :: transpos
-         integer :: mpierr, mpiSize, mpiRank, location_of_maximum
+         integer(4) :: mpierr, mpiSize, mpiRank, location_of_maximum
          real(8), allocatable, dimension(:) :: most_of_max_sum 
          m = size(A, dim=1) 
          n = size(A, dim=2) 
@@ -63,10 +63,10 @@ module task
         
          location_of_maximum=maxloc(most_of_max_sum,dim=1)-1
          
-         call mpi_bcast(x1, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, mpierr)
-         call mpi_bcast(x2, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, mpierr)
-         call mpi_bcast(y1, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, mpierr)
-         call mpi_bcast(y2, 1, MPI_INTEGER, location_of_maximum, MPI_COMM_WORLD, mpierr)
+         call mpi_bcast(x1, 1, MPI_INTEGER4, location_of_maximum, MPI_COMM_WORLD, mpierr)
+         call mpi_bcast(x2, 1, MPI_INTEGER4, location_of_maximum, MPI_COMM_WORLD, mpierr)
+         call mpi_bcast(y1, 1, MPI_INTEGER4, location_of_maximum, MPI_COMM_WORLD, mpierr)
+         call mpi_bcast(y2, 1, MPI_INTEGER4, location_of_maximum, MPI_COMM_WORLD, mpierr)
 
          deallocate(current_column)
          deallocate(most_of_max_sum)
